@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Shield Akaton",
+  "version": "1.0.0",
+  "description": "Collects Facebook posts, analyzes their suicide-risk score, and sends high-risk results to a local server.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://www.facebook.com/*",
+    "https://m.facebook.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.facebook.com/*", "*://m.facebook.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png"
+    }
+  }
+}
+  
