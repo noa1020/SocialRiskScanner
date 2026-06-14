@@ -1,4 +1,7 @@
 # Social Risk Scanner
+<img width="450" height="450" alt="image" src="https://github.com/user-attachments/assets/cf22926f-d202-4a2c-a030-cfa7461c33e4" />    <td align="center" style="font-size:1800px; font-weight:12000; padding:0 40px;"> ➜ </td><img width="450" height="450" alt="image" src="https://github.com/user-attachments/assets/a852b136-4528-4374-9560-28a32fc2f23d"  />
+
+
 
 ---
 
