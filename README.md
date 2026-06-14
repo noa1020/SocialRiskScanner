@@ -1,5 +1,7 @@
 # Shield Akaton
 
+<img width="1688" height="385" alt="image" src="https://github.com/user-attachments/assets/b239b338-1cfc-4362-b299-b8696e1b9454" />
+
 Shield Akaton is a lightweight prototype that combines a Chrome extension, a Flask API, and a React client to surface social posts that may warrant manual review as a generic risk signal.
 
 ## Role of the model
