@@ -1,34 +1,58 @@
-# Shield Akaton
+# Social Risk Scanner
 
-<img width="1688" height="385" alt="image" src="https://github.com/user-attachments/assets/b239b338-1cfc-4362-b299-b8696e1b9454" />
-<img width="438" height="302" alt="image" src="https://github.com/user-attachments/assets/c9c4c433-76d8-45b6-8113-a8dec3d1b746" />
-<img width="1817" height="868" alt="image" src="https://github.com/user-attachments/assets/9378da01-0667-4b77-b195-63b2e755660b" />
+---
 
-Shield Akaton is a lightweight prototype that combines a Chrome extension, a Flask API, and a React client to surface social posts that may warrant manual review as a generic risk signal.
+## Overview
 
-## Role of the model
+Social Risk Scanner is a full-stack prototype that analyzes social media text and produces a **provisional risk signal** for manual review.
 
-The model is not a medical or safety diagnostic tool. Its role is limited to:
+The system is composed of:
+- Chrome Extension (data collection)
+- Flask Backend (ML inference + decision layer)
+- React Dashboard (review UI)
 
-- receiving short social text
-- producing a generic risk-like score
-- flagging content that may deserve human review
+---
 
-The system should be interpreted as an experimental screening aid, not as a definitive judgment about a person.
+## Chrome Extension
+
+<img width="438" height="302" alt="extension preview" src="https://github.com/user-attachments/assets/c9c4c433-76d8-45b6-8113-a8dec3d1b746" />
+
+### Responsibilities
+- Extract post content from Facebook DOM
+- Capture username + metadata
+- Send structured JSON to backend
+- Trigger real-time analysis per post
+
+---
+
+## Backend (Flask + Hugging Face)
+
+### Core Responsibilities
+- REST API endpoint
+- Run Hugging Face model (`sentinet/suicidality`)
+- Convert raw output into structured risk signal
+- Store only high-risk posts in SQLite
+
+### Model Output
+- `label` (LABEL_0 / LABEL_1)
+- `score` (confidence)
+---
+
+## Client (React Dashboard)
+
+<img width="1817" height="868" alt="client preview" src="https://github.com/user-attachments/assets/9378da01-0667-4b77-b195-63b2e755660b" />
+
+### Features
+- Fetch review items from backend
+- Display risk score per post
+- Color-coded risk levels
+- Summary dashboard (total / flagged)
+
+---
 
 ## Workflow
 
-1. The Chrome extension scans visible post content on Facebook.
-2. Each post is sent to the Flask server as JSON.
-3. The server runs a Hugging Face-based classifier and returns a generic risk score.
-4. The UI displays the result as a provisional signal.
-5. Only posts that exceed the configured threshold are stored in SQLite for review.
-
-## Components
-
-- Extension: [chrome extention](chrome%20extention)
-- Server: [server](server)
-- Client: [client](client)
+<img width="782" height="537" alt="image" src="https://github.com/user-attachments/assets/3424a89e-8925-4e56-ba7b-1c9b366dcde7" />
 
 ## How to run
 
