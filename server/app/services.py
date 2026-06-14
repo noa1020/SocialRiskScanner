@@ -1,38 +1,48 @@
 from transformers import pipeline
+from threading import Lock
 
-classifier = pipeline("sentiment-analysis", model="sentinet/suicidality", truncation=True)
-HIGH_RISK_THRESHOLD = 0.95
+classifier = pipeline(
+    "sentiment-analysis",
+    model="sentinet/suicidality",
+    truncation=True
+)
+
+model_lock = Lock()
 
 
 def analyze_text(text):
-    """Return a generic risk-like signal for short social text.
-
-    This is not a medical diagnostic tool. It only provides a provisional
-    screening indicator that may be used to prioritize human review.
-    """
     if not isinstance(text, str) or not text.strip():
         return {
             "label": "UNKNOWN",
             "score": 0.0,
-            "score_percentage": 0.0,
+            "is_risk": False,
             "risk_level": "none",
-            "is_high_risk": False,
-            "note": "No input text provided.",
         }
 
-    result = classifier(text.strip())
-    label = result[0].get("label", "UNKNOWN")
-    score = float(result[0].get("score", 0.0))
-    score_percentage = round(score * 100, 2)
+    text = text.strip()
 
-    is_high_risk = score_percentage >= HIGH_RISK_THRESHOLD * 100
-    risk_level = "high" if is_high_risk else "moderate" if score_percentage >= 70 else "low"
+    with model_lock:
+        result = classifier(text)[0]
+
+    print(result)
+    label = result.get("label", "UNKNOWN")
+    score = float(result.get("score", 0.0))
+
+    is_risk = label == "LABEL_1"
+
+    risk_level = "none"
+
+    if is_risk:
+        if score >= 0.97:
+            risk_level = "high"
+        elif score >= 0.95:
+            risk_level = "medium"
+        else:
+            risk_level = "low"
 
     return {
         "label": label,
         "score": score,
-        "score_percentage": score_percentage,
+        "is_risk": is_risk,
         "risk_level": risk_level,
-        "is_high_risk": is_high_risk,
-        "note": "Provisional signal only; not a diagnosis.",
     }

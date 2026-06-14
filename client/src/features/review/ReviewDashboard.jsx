@@ -2,16 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { fetchReviewItems } from './reviewApi';
 import './reviewDashboard.css';
 
-const getRiskDetails = (score) => {
-  if (score >= 90) {
-    return { label: 'Provisional high', tone: 'critical' };
-  }
-  if (score >= 70) {
-    return { label: 'Provisional medium', tone: 'high' };
-  }
-  return { label: 'Low signal', tone: 'low' };
-};
-
 export function ReviewDashboard() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,17 +13,11 @@ export function ReviewDashboard() {
     async function loadItems() {
       try {
         const data = await fetchReviewItems();
-        if (active) {
-          setItems(data);
-        }
+        if (active) setItems(data);
       } catch (err) {
-        if (active) {
-          setError(err.message || 'Unable to connect to the server.');
-        }
+        if (active) setError(err.message || 'Unable to connect to the server.');
       } finally {
-        if (active) {
-          setLoading(false);
-        }
+        if (active) setLoading(false);
       }
     }
 
@@ -45,23 +29,40 @@ export function ReviewDashboard() {
   }, []);
 
   const summary = useMemo(() => {
-    const flaggedCount = items.filter((item) => item.suicide_rate?.is_high_risk).length;
+    const flaggedCount = items.filter(
+      (item) => item.suicide_rate.risk_level  === 'high'
+    ).length;
+
     return {
       total: items.length,
       flaggedCount,
     };
   }, [items]);
 
+  const getTone = (riskLevel) => {
+    if (riskLevel === 'high') return 'critical';
+    if (riskLevel === 'medium') return 'high';
+    return 'low';
+  };
+
+  const getLabel = (riskLevel) => {
+    if (riskLevel === 'high') return 'High risk';
+    if (riskLevel === 'medium') return 'Medium risk';
+    return 'Low signal';
+  };
+
   return (
     <div className="app-shell">
       <header className="hero-card">
         <div>
-          <p className="eyebrow">Shield Akaton</p>
+          <p className="eyebrow">Social Risk Scanner</p>
           <h1>Provisional social risk review</h1>
           <p className="hero-copy">
-            This dashboard displays generic screening signals from short social text. It is not a diagnosis and should only be used as a review aid.
+            This dashboard displays generic screening signals from short social text.
+            It is not a diagnosis.
           </p>
         </div>
+
         <div className="summary-panel">
           <div>
             <strong>{summary.total}</strong>
@@ -77,30 +78,32 @@ export function ReviewDashboard() {
       {loading && <div className="status-card">Loading review items…</div>}
       {error && <div className="status-card error">{error}</div>}
 
-      {!loading && !error && items.length === 0 && <div className="status-card">No review items were stored.</div>}
+      {!loading && !error && items.length === 0 && (
+        <div className="status-card">No review items were stored.</div>
+      )}
 
       <div className="posts-container">
         {items.map((item) => {
-          const score = item.suicide_rate?.score_percentage ?? 0;
-          const risk = getRiskDetails(score);
+          const rate = item.suicide_rate || {};
+
+          const tone = getTone(rate.risk_level);
+          const label = getLabel(rate.risk_level);
+
           return (
-            <article key={item.id} className={`post-card ${risk.tone}`}>
+            <article key={item.id} className={`post-card ${tone}`}>
               <div className="card-topline">
-                <span className="risk-badge">{risk.label}</span>
-                <span className="timestamp">{item.created_at || 'Unknown time'}</span>
+                <span className="risk-badge">{label}</span>
+                <span className="timestamp">
+                  {item.created_at || 'Unknown time'}
+                </span>
               </div>
+
               <h2>{item.username || 'Unknown user'}</h2>
-              <p className="post-content">{item.content || 'No content available.'}</p>
-              <div className="metrics">
-                <div>
-                  <span className="metric-label">Model score</span>
-                  <strong>{score.toFixed(2)}%</strong>
-                </div>
-                <div>
-                  <span className="metric-label">Note</span>
-                  <strong>{item.suicide_rate?.note || 'Provisional signal'}</strong>
-                </div>
-              </div>
+
+              <p className="post-content">
+                {item.content || 'No content available.'}
+              </p>
+
             </article>
           );
         })}

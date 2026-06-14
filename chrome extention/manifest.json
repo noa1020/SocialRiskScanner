@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Shield Akaton",
+  "name": "Social Risk Scanner",
   "version": "1.0.0",
   "description": "Collects Facebook posts, analyzes their suicide-risk score, and sends high-risk results to a local server.",
   "permissions": [

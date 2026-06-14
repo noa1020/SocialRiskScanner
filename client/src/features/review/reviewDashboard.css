@@ -120,17 +120,6 @@
   margin-bottom: 4px;
 }
 
-.low {
-  background: linear-gradient(135deg, rgba(104, 184, 120, 0.25), rgba(82, 141, 93, 0.35));
-}
-
-.high {
-  background: linear-gradient(135deg, rgba(255, 125, 92, 0.25), rgba(194, 73, 42, 0.35));
-}
-
-.critical {
-  background: linear-gradient(135deg, rgba(220, 63, 63, 0.3), rgba(176, 22, 22, 0.4));
-}
 
 .status-card {
   max-width: 1200px;

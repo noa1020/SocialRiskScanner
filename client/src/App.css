@@ -124,12 +124,12 @@
   background: linear-gradient(135deg, rgba(104, 184, 120, 0.25), rgba(82, 141, 93, 0.35));
 }
 
-.moderate {
+.medium {
   background: linear-gradient(135deg, rgba(255, 194, 102, 0.25), rgba(213, 144, 41, 0.35));
 }
 
 .high {
-  background: linear-gradient(135deg, rgba(255, 125, 92, 0.25), rgba(194, 73, 42, 0.35));
+  background: linear-gradient(135deg, rgba(255, 217, 92, 0.25), rgba(194, 136, 42, 0.35));
 }
 
 .critical {
